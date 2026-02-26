@@ -1,0 +1,5 @@
+# Environment Variables
+.env
+
+# Node Modules (You should never push this heavy folder to GitHub)
+node_modules/
