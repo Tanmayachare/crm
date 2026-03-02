@@ -1,71 +1,125 @@
 <template>
-    <div class="flex h-screen bg-gray-100 border-r">
-        <div class="w-1/3 bg-white border-r p-6 overflow-y-auto">
-            <h2 class="text-xl font-bold mb-4">Object Manager</h2>
-            <div class="flex gap-2 mb-6">
-                <input v-model="newObjName" placeholder="New Object Name (e.g. Projects)"
-                    class="border p-2 rounded w-full" />
-                <button @click="createObject" class="bg-blue-600 text-white px-4 rounded">+</button>
+    <div class="h-full flex bg-white border border-gray-200 shadow-sm rounded-sm overflow-hidden">
+        
+        <!-- Left Sidebar: Object List -->
+        <div class="w-64 bg-gray-50 border-r border-gray-200 flex flex-col flex-shrink-0">
+            <div class="p-4 border-b border-gray-200 bg-white">
+                <h2 class="text-sm font-semibold text-gray-800 uppercase tracking-wider mb-3">Object Manager</h2>
+                <div class="flex flex-col gap-2">
+                    <input v-model="newObjName" placeholder="New Object Name (e.g. Projects)"
+                        class="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 outline-none w-full" />
+                    <button @click="createObject" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 rounded transition shadow-sm flex justify-center items-center gap-1 w-full">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Create Object
+                    </button>
+                </div>
             </div>
-            <ul>
+            <ul class="flex-1 overflow-y-auto custom-scrollbar bg-white">
                 <li v-for="obj in objects" :key="obj" @click="selectObject(obj)"
-                    class="p-3 cursor-pointer hover:bg-blue-50 border-b flex justify-between"
-                    :class="{ 'bg-blue-100 font-bold': selectedObject === obj }">
-                    <span>{{ obj }}</span>
-                    <span>></span>
+                    class="px-4 py-2.5 cursor-pointer border-b border-gray-100 flex justify-between items-center transition-colors text-sm"
+                    :class="selectedObject === obj ? 'bg-blue-50 border-l-4 border-l-blue-600 font-semibold text-blue-800' : 'hover:bg-gray-50 text-gray-600 border-l-4 border-l-transparent'">
+                    <span class="capitalize">{{ obj }}</span>
+                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </li>
             </ul>
         </div>
 
-        <div class="w-2/3 px-5">
-            <div v-if="selectedObject">
-                <h1 class="text-3xl font-bold mb-3 capitalize">{{ selectedObject }}
-                    <span class="text-gray-400 text-lg">Fields & Relationships</span>
-                </h1>
-                <div class="bg-white p-6 rounded shadow mb-4">
-                    <h3 class="font-bold mb-4">Create Custom Field</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input v-model="newField.name" placeholder="Field Name (e.g. Budget)"
-                            class="border p-2 rounded flex-1" />
-                        <select v-model="newField.type" class="border p-2 rounded">
-                            <option value="VARCHAR(255)">Text</option>
-                            <option value="INT">Number (Integer)</option>
-                            <option value="DECIMAL(10,2)">Currency/Decimal</option>
-                            <option value="DATE">Date</option>
-                            <option value="BOOLEAN">Checkbox(True/False)</option>
-                            <option value="ENUM">Dropdown (pick List)</option>
-                        </select>
-                        <label v-if="newField.type === 'ENUM'">
-                            <input v-model="newField.options" placeholder="Options (comma separated)"
-                                class="border p-2 rounded flex-1 w-full" />
-                        </label>
-                        <button @click="addField"
-                            class="bg-green-600 text-white py-2 px-6 rounded font-bold">Save</button>
+        <!-- Right Main Content: Field Manager -->
+        <div class="flex-1 flex flex-col bg-white min-w-0">
+            <div v-if="selectedObject" class="h-full flex flex-col">
+                
+                <!-- Object Header -->
+                <div class="px-6 py-4 border-b border-gray-200 bg-white">
+                    <h1 class="text-xl font-bold text-gray-900 capitalize flex items-center gap-2">
+                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        {{ selectedObject }}
+                        <span class="text-gray-400 text-sm font-medium ml-2 border-l pl-3 border-gray-300">Fields & Relationships</span>
+                    </h1>
+                </div>
+
+                <!-- Create Field Form Strip -->
+                <div class="px-6 py-3 bg-gray-50 border-b border-gray-200">
+                    <h3 class="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Create Custom Field</h3>
+                    <div class="flex flex-wrap md:flex-nowrap gap-3 items-end">
+                        <div class="flex-1 min-w-[150px]">
+                            <label class="block text-xs text-gray-500 mb-1">Field Name</label>
+                            <input v-model="newField.name" placeholder="e.g. Assigned To" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 outline-none" />
+                        </div>
+                        <div class="flex-1 min-w-[150px]">
+                            <label class="block text-xs text-gray-500 mb-1">Data Type</label>
+                            <select v-model="newField.type" class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded bg-white focus:ring-1 focus:ring-blue-500 outline-none">
+                                <option value="VARCHAR(255)">Text (String)</option>
+                                <option value="INT">Number (Integer)</option>
+                                <option value="DECIMAL(10,2)">Currency/Decimal</option>
+                                <option value="DATE">Date</option>
+                                <option value="BOOLEAN">Checkbox (Boolean)</option>
+                                <option value="ENUM">Dropdown (Pick List)</option>
+                                <option value="LOOKUP">Lookup Relationship</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Conditional Inputs based on explicitly chosen advanced types -->
+                        <div v-if="newField.type === 'LOOKUP'" class="flex-1 min-w-[150px]">
+                            <label class="block text-xs text-blue-600 font-medium mb-1">Related Object</label>
+                            <select v-model="newField.value" class="w-full px-3 py-1.5 text-sm border border-blue-300 rounded bg-blue-50 focus:ring-1 focus:ring-blue-500 outline-none">
+                                <option v-for="obj in objects" :key="obj" value="INT">{{ obj }} (ID)</option>
+                            </select>
+                        </div>
+                        <div v-if="newField.type === 'ENUM'" class="flex-1 min-w-[200px]">
+                            <label class="block text-xs text-blue-600 font-medium mb-1">Pick List Options</label>
+                            <input v-model="newField.options" placeholder="Option 1, Option 2, Option 3" class="w-full px-3 py-1.5 text-sm border border-blue-300 rounded bg-blue-50 focus:ring-1 focus:ring-blue-500 outline-none" />
+                        </div>
+
+                        <button @click="addField" class="bg-indigo-600 hover:bg-indigo-700 text-white min-w-[100px] text-sm font-medium py-1.5 px-4 rounded transition shadow-sm mb-0.5">
+                            Save Field
+                        </button>
                     </div>
                 </div>
-                <div class="bg-white rounded shadow overflow-hidden">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-50 border-b">
-                            <tr>
-                                <th class="p-3 w-1/4">Field Name</th>
-                                <th class="p-3 w-1/2">Type</th>
-                                <th class="p-3 w-1/4">Primary Key?</th>
-                                <th class="p-3 w-1/12 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="f in fields" :key="f.Field" class="border-b">
-                                <td class="p-3 font-mono text-blue-600">{{ f.Field }}</td>
-                                <td class="p-3 text-gray-500 text-wrap">{{ f.Type }}</td>
-                                <td class="p-3">{{ f.Key === 'PRI' ? '🔑' : '' }}</td>
-                                <td class="p-3"><button @click="delteField(f.Field)">🗑️</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- High-Density Fields Table -->
+                <div class="flex-1 overflow-auto custom-scrollbar p-6 bg-white">
+                    <div class="border border-gray-200 shadow-sm rounded">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead class="bg-gray-50 border-b border-gray-200">
+                                <tr class="text-gray-500 text-xs font-semibold uppercase tracking-wider">
+                                    <th class="py-2.5 px-4 w-1/4 border-r border-gray-100">Field Name</th>
+                                    <th class="py-2.5 px-4 w-1/2 border-r border-gray-100">Data Type</th>
+                                    <th class="py-2.5 px-4 w-1/6 border-r border-gray-100 text-center">Primary Key?</th>
+                                    <th class="py-2.5 px-4 w-1/12 text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-700 text-sm">
+                                <tr v-for="f in fields" :key="f.Field" class="border-b border-gray-100 hover:bg-gray-50 transition-colors group">
+                                    <td class="py-2.5 px-4 font-mono text-sm text-indigo-600 font-medium border-r border-gray-50">{{ f.Field }}</td>
+                                    <td class="py-2.5 px-4 text-gray-600 border-r border-gray-50 truncate max-w-xs" :title="f.Type">{{ f.Type }}</td>
+                                    <td class="py-2.5 px-4 text-center border-r border-gray-50">
+                                        <span v-if="f.Key === 'PRI'" class="inline-flex items-center justify-center bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full font-bold">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v-2H2v-4h4.257a6 6 0 1111.743-.257zM8 10a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg>
+                                            PRI
+                                        </span>
+                                        <span v-else class="text-gray-300">-</span>
+                                    </td>
+                                    <td class="py-2 px-4 text-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button v-if="f.Key !== 'PRI'" @click="delteField(f.Field)" class="text-gray-400 hover:text-red-500 p-1 rounded hover:bg-red-50 transition" title="Delete Field">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                        <span v-else class="text-xs text-gray-400 italic">Locked</span>
+                                    </td>
+                                </tr>
+                                <tr v-if="fields.length === 0">
+                                    <td colspan="4" class="py-8 text-center text-gray-400">No custom fields created yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div v-else class="text-center text-gray-400 mt-20">
-                <p class="text-xl">Select an object from the left to edit its fields.</p>
+            
+            <!-- Empty State -->
+            <div v-else class="h-full flex flex-col items-center justify-center text-gray-400 bg-gray-50">
+                <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                <p class="text-lg font-medium text-gray-500">Select an object to manage its fields</p>
+                <p class="text-sm mt-1">Or create a new object from the left sidebar.</p>
             </div>
         </div>
     </div>
