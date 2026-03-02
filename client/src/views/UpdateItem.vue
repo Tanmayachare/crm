@@ -58,8 +58,8 @@ const getType = (type) => {
 
 const fetchdata = async () => {
     try {
-        const res1 = await axios.get(`http://localhost:3000/api/schema/objects/${tableName}/fields`)
-        const res2 = await axios.get(`http://localhost:3000/api/data/${tableName}`)
+        const res1 = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${tableName}/fields`)
+        const res2 = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/data/${tableName}`)
         fields.value = res1.data;
         // console.log(fields.value)
         formData.value = res2.data.find(f => f.id == rowid);
@@ -78,7 +78,7 @@ const update = async () => {
             alert("Please fill the form before submitting");
             return;
         }
-        await axios.put(`http://localhost:3000/api/data/${tableName}/${rowid}`, formData.value);
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/data/${tableName}/${rowid}`, formData.value);
         alert("Record updated successfully")
         router.push(`/view/${tableName}`)
     } catch (err) {

@@ -32,7 +32,7 @@ const objs = ref({
 
 const fetchStatus = async () => {
     try {
-        const res = await axios.get('http://localhost:3000/api/dashboard-status1');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/dashboard-status1`);
         stats.value = res.data;
         if (!stats.value.total_leads) {
             stats.value.total_leads = 0;

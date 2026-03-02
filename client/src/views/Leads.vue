@@ -89,7 +89,7 @@ const searchText = ref('');
 
 const addLead = async () => {
     try {
-        await axios.post('http://localhost:3000/api/leads', newLead.value);
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/leads`, newLead.value);
 
         newLead.value = {
             name: '',
@@ -107,7 +107,7 @@ const addLead = async () => {
 
 const fetchLead = async () => {
     try {
-        const res = await axios.get('http://localhost:3000/api/leads')
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/leads`)
         leads.value = res.data;
         // console.log(leads)
     }
@@ -120,7 +120,7 @@ const fetchLead = async () => {
 const deleteLead = async (id) => {
     if (confirm("Are you sure you want to delete this lead?")) {
         try {
-            await axios.delete(`http://localhost:3000/api/leads/${id}`);
+            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/leads/${id}`);
             fetchLead();
             alert("Lead deleted successfully!");
         }
@@ -132,7 +132,7 @@ const deleteLead = async (id) => {
 
 const updateLead = async (lead) => {
     try {
-        await axios.put(`http://localhost:3000/api/leads/${lead.id}`, {
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/leads/${lead.id}`, {
             status: lead.status
         })
         alert("Status saved for " + lead.name)

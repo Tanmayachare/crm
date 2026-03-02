@@ -62,7 +62,7 @@ let fieldName = ref([])
 
 const fetchTables = async () => {
     try {
-        const res = await axios.get(`http://localhost:3000/api/data/${tableName}`)
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/data/${tableName}`)
         table.value = res.data;
         // console.log(table.value)
     }
@@ -74,7 +74,7 @@ const fetchTables = async () => {
 
 const fetchdata = async () => {
     try {
-        const res = await axios.get(`http://localhost:3000/api/schema/objects/${tableName}/fields`)
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${tableName}/fields`)
         fields.value = res.data;
         col = fields.value.filter(f => f.Type.includes("varchar")).map(i => i.Field)
         // console.log(fields.value);
@@ -90,7 +90,7 @@ const fetchdata = async () => {
 const deleteData = async (id) => {
     if (confirm("Are you sure you want to delete this data?")) {
         try {
-            await axios.delete(`http://localhost:3000/api/data/${tableName}/${id}`);
+            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/data/${tableName}/${id}`);
             fetchTables();
             alert("Data deleted successfully!");
         }

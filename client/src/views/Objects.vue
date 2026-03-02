@@ -84,7 +84,7 @@ const newField = ref({ name: '', type: 'VARCHAR(255)', options: '' })
 
 const fetchObjects = async () => {
     try {
-        const res = await axios.get('http://localhost:3000/api/schema/objects');
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`);
         objects.value = res.data;
     }
     catch (err) {
@@ -95,7 +95,7 @@ const fetchObjects = async () => {
 const createObject = async () => {
     if (!newObjName.value.trim()) return;
     try {
-        await axios.post('http://localhost:3000/api/schema/objects', {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`, {
             tableName: newObjName.value.toLowerCase().replace(/\s/g, '_')
         })
         newObjName.value = '';
@@ -109,7 +109,7 @@ const createObject = async () => {
 
 const selectObject = async (name) => {
     selectedObject.value = name;
-    const res = await axios.get(`http://localhost:3000/api/schema/objects/${name}/fields`);
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${name}/fields`);
     fields.value = res.data;
 }
 
@@ -124,7 +124,7 @@ const addField = async () => {
         finalType = `ENUM('${formatted}')`;
     }
     try {
-        await axios.post(`http://localhost:3000/api/schema/objects/${selectedObject.value}/fields`, {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObject.value}/fields`, {
             fieldName: newField.value.name.toLowerCase().replace(/\s/g, '_'),
             fieldType: finalType,
         })
@@ -140,7 +140,7 @@ const addField = async () => {
 
 const delteField = async (colName) => {
     try {
-        await axios.delete(`http://localhost:3000/api/schema/objects/${selectedObject.value}/${colName}`)
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObject.value}/${colName}`)
         alert(`${colName} is deleted from ${selectedObject.value}`);
         selectObject(selectedObject.value);
     }

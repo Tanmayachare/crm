@@ -6,7 +6,7 @@ import { ref, onMounted } from 'vue';
 const objects = ref([]);
 const fetchObjectsNav = async () => {
   try {
-    const res = await axios.get('http://localhost:3000/api/schema/objects');
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`);
     objects.value = res.data;
   }
   catch (err) {

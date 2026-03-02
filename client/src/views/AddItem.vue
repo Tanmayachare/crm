@@ -58,7 +58,7 @@ const getType = (type) => {
 
 const fetchdata = async () => {
     try {
-        const res = await axios.get(`http://localhost:3000/api/schema/objects/${tableName}/fields`)
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${tableName}/fields`)
         fields.value = res.data;
     }
     catch (err) {
@@ -76,7 +76,7 @@ const submitForm = async () => {
             alert("Please fill the form before submitting");
             return;
         }
-        await axios.post(`http://localhost:3000/api/data/${tableName}`, formData.value);
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/data/${tableName}`, formData.value);
         alert("Form submitted successfully");
         formData = {};
         router.push(`/view/${tableName}`)
