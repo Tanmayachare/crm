@@ -36,10 +36,21 @@ router.get('/objects/:tableName/fields', (req, res)=>{
 
 router.post('/objects/:tableName/fields', (req, res)=>{
     const tableName = req.params.tableName;
-    const { fieldName, fieldType } = req.body;
-    const query = `ALTER TABLE ${tableName} ADD COLUMN ${fieldName} ${fieldType}`;
+    const { fieldName, fieldType, refObj } = req.body;
+    let query;
+    if(fieldType == 'LOOKUP'){
+        query = `ALTER TABLE ${tableName}
+        ADD COLUMN ${fieldName} INT,
+        ADD CONSTRAINT fk_${tableName}_${fieldName}
+        FOREIGN KEY (${fieldName})
+        REFERENCES ${refObj}(id)`;
+    }
+    else{
+        query = `ALTER TABLE ${tableName} ADD COLUMN ${fieldName} ${fieldType}`;
+        console.log(query);
+    }
     db.query(query, (err, results)=>{
-        if(err) return res.status(500).json({ error: "Field creation failed" });
+        if(err) return res.status(500).json({ error: "Field creation failed", err });
         res.json({ message: `Field ${fieldName} added to ${tableName} successfully` });
     })
 })
@@ -47,7 +58,10 @@ router.post('/objects/:tableName/fields', (req, res)=>{
 router.delete('/objects/:tableName/:colName', (req, res)=>{
     const tableName = req.params.tableName;
     const colName = req.params.colName;
-    const query = `ALTER TABLE ?? DROP COLUMN ??`
+    const {key} = req.body;
+    let query;
+    if(key == 'MUL') query = `ALTER TABLE ?? DROP FOREIGN KEY fk_${tableName}_${colName}, DROP COLUMN ??;`
+    else query = `ALTER TABLE ?? DROP COLUMN ??`
     db.query(query, [tableName, colName], (err, results)=>{
         if(err) return res.status(500).json({ error: "Error while deleting column"});
         res.json({ message: `${colName} deleted successfully`})

@@ -100,10 +100,6 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 
-const props = defineProps({
-    // No longer accepts globalSearch
-});
-
 const leads = ref([]);
 
 const newLead = ref({
