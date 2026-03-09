@@ -142,8 +142,8 @@ onMounted(() => {
           class="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent transition-colors whitespace-nowrap">
           Leads
         </RouterLink> -->
-        <!-- Dynamically pin up to 3 custom objects for quick access -->
-        <!-- <RouterLink v-for="objs in objects.slice(0, 3)" :key="'pin-'+objs" :to="'/view/' + objs" active-class="border-b-2 border-blue-500 text-blue-600" class="capitalize px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent transition-colors whitespace-nowrap">
+      <!-- Dynamically pin up to 3 custom objects for quick access -->
+      <!-- <RouterLink v-for="objs in objects.slice(0, 3)" :key="'pin-'+objs" :to="'/view/' + objs" active-class="border-b-2 border-blue-500 text-blue-600" class="capitalize px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent transition-colors whitespace-nowrap">
             {{ objs }}
          </RouterLink>
       </div> -->

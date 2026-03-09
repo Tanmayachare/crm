@@ -113,7 +113,7 @@ const fetchdata = async () => {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${tableName}/fields`)
         fields.value = res.data;
         col = fields.value.filter(f => f.Type.includes("varchar")).map(i => i.Field)
-        // console.log(fields.value);
+        console.log(fields.value);
         fieldName = fields.value.map(f => f.Field).filter(f => f !== 'id' && f !== 'created_at');
         // console.log(fieldName)
     }
@@ -138,8 +138,7 @@ const deleteData = async (id) => {
 
 const filteredData = computed(() => {
     let result = table.value;
-
-    // Local Search Filter
+    // Search Filter
     if (localSearchText.value && result.length > 0) {
         const lowerLocal = localSearchText.value.toLowerCase();
         result = result.filter(row => {
@@ -148,7 +147,6 @@ const filteredData = computed(() => {
             );
         });
     }
-
     return result;
 })
 

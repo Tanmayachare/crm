@@ -51,8 +51,4 @@ router.put('/:tableName/:id',(req, res)=>{
 
 });
 
-// router.put('/:tableName/:id', (req, res)=>{
-//     const tableName = req.params.tableName;
-//     const ID = req.params.id;
-// })
 module.exports = router;

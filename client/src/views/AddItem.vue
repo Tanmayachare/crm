@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <pre>{{ fields }}</pre> -->
         <form @submit.prevent="submitForm" id='add'
             class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
             <div v-for="field in fields" :key="field.Field" class="mb-4 block">
@@ -12,10 +11,15 @@
                     </select>
                     <input v-else-if="getType(field.Type) === 'text'" type="text"
                         class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required />
-                    <input v-else-if="getType(field.Type) === 'number'" type="number"
+                    <input v-else-if="getType(field.Type) === 'number' && field.Key !== 'MUL'" type="number"
                         class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required />
                     <input v-else-if="getType(field.Type) === 'date'" type="date"
                         class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required />
+
+                    <select v-if="field.Key === 'MUL'" @click="fetchFKId(field.Field)"
+                        class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required>
+                        <option v-for="opt in fkdata" :value="opt">{{ opt }}</option>
+                    </select>
                 </template>
 
                 <div v-else>
@@ -47,7 +51,7 @@ const tableName = route.params.tableName;
 const fields = ref([]);
 const opts = ref([]);
 let formData = ref({});
-
+let fkdata = ref([]);
 
 const getType = (type) => {
     if (type.includes("varchar")) return "text";
@@ -55,11 +59,23 @@ const getType = (type) => {
     if (type.includes("date") || type.includes("datetime")) return "date";
 
 }
+const fetchFKId = async (FK_Obj) => {
+    try {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/data/${FK_Obj.slice(0, -3)}`)
+        fkdata.value = res.data.map(f => f.id );
+        // console.log(fkdata);
+    }
+    catch (err) {
+        alert("Error while fetching fields");
+        console.error("Error while fetching fields:", err);
+    }
+}
 
 const fetchdata = async () => {
     try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${tableName}/fields`)
         fields.value = res.data;
+        // console.log(fields.value);
     }
     catch (err) {
         alert("Error while fetching fields");

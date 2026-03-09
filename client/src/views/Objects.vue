@@ -217,11 +217,10 @@ const selectObject = async (name) => {
 const addField = async () => {
     if (!newField.value.name.trim()) return;
     let finalType = newField.value.type;
-    console.log(newField.value);
+    // console.log(newField.value);
 
     if (newField.value.type === 'ENUM') {
         if (!newField.value.options.trim()) return alert("Please provide options for ENUM type");
-
         const formatted = newField.value.options.split(',').map(i => i.trim()).join("','");
         finalType = `ENUM('${formatted}')`;
     }
@@ -245,9 +244,6 @@ const addField = async () => {
 }
 
 const delteField = async (colName, keyType) => {
-    console.log(selectedObject);
-    console.log(keyType);
-    console.log(colName);
     try {
         await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObject.value}/${colName}`, {
             data: { key: keyType }
