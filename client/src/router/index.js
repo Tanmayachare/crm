@@ -1,5 +1,6 @@
 import AddItem from '@/views/AddItem.vue';
 import Dashbord from '@/views/Dashbord.vue';
+import DetailPage from '@/views/DetailPage.vue';
 import DynamicObj from '@/views/DynamicObj.vue';
 import Leads from '@/views/Leads.vue';
 import Objects from '@/views/Objects.vue';
@@ -39,6 +40,11 @@ const router = createRouter({
             name: 'update',
             component: UpdateItem
         },
+        {
+            path: '/detailview/:tableName/:id',
+            name:'detailview',
+            component: DetailPage
+        }
     ]
 });
 

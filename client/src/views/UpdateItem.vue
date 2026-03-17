@@ -2,7 +2,7 @@
     <div>
         <form @submit.prevent="update" id='update'
             class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <div v-for="field in fields" :key="field.Field" class="mb-4 block">
+            <div v-for="field in fields" :key="field.Field" class="mb-2  block">
                 <template v-if="field.Field !== 'id' && field.Field !== 'created_at'">
                     <label class="block text-gray-700 text-sm font-bold mb-2 capitalize">{{ field.Field }}</label>
                     <select v-if="field.Type.includes('enum') || field.Type.includes('ENUM')"

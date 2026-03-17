@@ -4,6 +4,15 @@ import axios from 'axios';
 import { ref, onMounted, watch, computed } from 'vue';
 
 const route = useRoute();
+
+const iconPaths = {
+  leads: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01",
+  accounts: "M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4",
+  contacts: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
+  opportunities: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+  defaultCustom: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+};
+
 const currentRouteName = computed(() => {
   if (route.path === '/') return 'Dashboard Overview';
   if (route.path === '/leads') return 'Lead Management';
@@ -13,6 +22,14 @@ const currentRouteName = computed(() => {
 });
 
 const objects = ref([]);
+const standardObjectsList = ['leads', 'accounts', 'contacts', 'opportunities']
+
+const standardObjects = computed(() => {
+  return objects.value.filter(tablename => standardObjectsList.includes(tablename));
+})
+const customObjects = computed(() => {
+  return objects.value.filter(tablename => !standardObjectsList.includes(tablename));
+})
 const fetchObjectsNav = async () => {
   try {
     const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`);
@@ -68,6 +85,15 @@ onMounted(() => {
           <span class="text-sm">Leads</span>
         </RouterLink>
 
+        <RouterLink v-for="objs in standardObjects" :key="objs" :to="'/view/' + objs"
+          active-class="bg-blue-600 text-white font-medium shadow-md"
+          class="flex items-center gap-3 py-2 px-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-800 hover:text-white group">
+          <svg class="w-5 h-5 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="iconPaths[objs]"></path>
+          </svg>
+          <span class="text-sm truncate capitalize">{{ objs }}</span>
+        </RouterLink>
+
         <div class="px-3 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Configuration</div>
 
         <RouterLink to="/objects" active-class="bg-blue-600 text-white font-medium shadow-md"
@@ -85,7 +111,7 @@ onMounted(() => {
         <div v-if="objects.length" class="px-3 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
           Custom Objects</div>
 
-        <RouterLink v-for="objs in objects" :key="objs" :to="'/view/' + objs"
+        <RouterLink v-for="objs in customObjects" :key="objs" :to="'/view/' + objs"
           active-class="bg-blue-600 text-white font-medium shadow-md"
           class="flex items-center gap-3 py-2 px-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-800 hover:text-white group">
           <svg class="w-5 h-5 opacity-70 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">

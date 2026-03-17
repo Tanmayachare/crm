@@ -60,6 +60,7 @@
                                 class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded bg-white focus:ring-1 focus:ring-blue-500 outline-none">
                                 <option value="VARCHAR(255)">Text (String)</option>
                                 <option value="INT">Number (Integer)</option>
+                                <option value="EMAIL">Email</option>
                                 <option value="DECIMAL(10,2)">Currency/Decimal</option>
                                 <option value="DATE">Date</option>
                                 <option value="BOOLEAN">Checkbox (Boolean)</option>
@@ -174,7 +175,7 @@ const objects = ref([])
 const selectedObject = ref(null)
 const fields = ref([])
 const newObjName = ref('')
-const newField = ref({ name: '', type: 'VARCHAR(255)', options: '', relatedObj: '' })
+const newField = ref({ name: '', type: 'VARCHAR(255)', options: '', relatedObj: '', validation: '' })
 // const emoji = ref(['🚗', '🛫', '🌏', '🏟', '🏡', '🌅', '🌄', '❄', '⚽', '🎓', '♟', '🏹', '☎'])
 
 const setDefaultName = () => {
@@ -218,6 +219,15 @@ const addField = async () => {
     if (!newField.value.name.trim()) return;
     let finalType = newField.value.type;
     // console.log(newField.value);
+
+    if (newField.value.type === 'EMAIL') {
+        newField.value.validation = '%@%.%';
+        finalType = 'varchar(225)';
+    }
+
+    if (newField.value.type === 'BOOLEAN') {
+        finalType = "ENUM('true', 'false')";
+    }
 
     if (newField.value.type === 'ENUM') {
         if (!newField.value.options.trim()) return alert("Please provide options for ENUM type");

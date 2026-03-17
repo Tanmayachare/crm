@@ -18,7 +18,7 @@
 
                     <select v-if="field.Key === 'MUL'" @click="fetchFKId(field.Field)"
                         class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required>
-                        <option v-for="opt in fkdata" :value="opt">{{ opt }}</option>
+                        <option v-for="opt in fkdata" :value="opt">{{ opt.id }}</option>
                     </select>
                 </template>
 
@@ -62,8 +62,8 @@ const getType = (type) => {
 const fetchFKId = async (FK_Obj) => {
     try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/data/${FK_Obj.slice(0, -3)}`)
-        fkdata.value = res.data.map(f => f.id );
-        // console.log(fkdata);
+        fkdata.value = res.data;
+        console.log(fkdata);
     }
     catch (err) {
         alert("Error while fetching fields");

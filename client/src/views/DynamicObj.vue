@@ -44,8 +44,11 @@
                         class="border-b border-gray-100 hover:bg-blue-50 transition-colors group cursor-default">
                         <td class="py-2 px-4 text-center text-gray-400 text-xs border-r border-gray-50">{{ index + 1 }}
                         </td>
-                        <td v-for="col in fieldName" :key="col" class="py-2 px-4 border-r border-gray-50 text-gray-900">
-                            {{ row[col] }}
+                        <td v-for="(col, cindex) in fieldName" :key="col" class="py-2 px-4 border-r border-gray-50"
+                            :class="{ 'text-blue-500': cindex === 0 }">
+                            <router-link :to="`/detailview/${tableName}/${row.id}`" v-if="cindex === 0">{{ row[col]
+                                }}</router-link>
+                            <span v-else>{{ row[col] }}</span>
                         </td>
                         <td class="py-1 px-4 text-center opacity-100 transition-opacity flex justify-center gap-2">
                             <router-link :to="`/update/${tableName}/${row.id}`"
@@ -113,7 +116,7 @@ const fetchdata = async () => {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${tableName}/fields`)
         fields.value = res.data;
         col = fields.value.filter(f => f.Type.includes("varchar")).map(i => i.Field)
-        console.log(fields.value);
+        // console.log(fields.value);
         fieldName = fields.value.map(f => f.Field).filter(f => f !== 'id' && f !== 'created_at');
         // console.log(fieldName)
     }

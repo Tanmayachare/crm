@@ -10,7 +10,7 @@
 
         <!-- High-Density Metrics Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            
+
             <div class="bg-white p-4 rounded-md shadow-sm border border-gray-200 relative overflow-hidden group">
                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
                 <div class="flex justify-between items-start mb-2">
