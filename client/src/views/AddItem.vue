@@ -15,7 +15,6 @@
                         class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required />
                     <input v-else-if="getType(field.Type) === 'date'" type="date"
                         class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required />
-
                     <select v-if="field.Key === 'MUL'" @click="fetchFKId(field.Field)"
                         class="border py-2 mb-2 block w-full px-4" v-model="formData[field.Field]" required>
                         <option v-for="opt in fkdata" :value="opt">{{ opt.id }}</option>
@@ -57,7 +56,6 @@ const getType = (type) => {
     if (type.includes("varchar")) return "text";
     if (type.includes("int") || type.includes("decimal")) return "number";
     if (type.includes("date") || type.includes("datetime")) return "date";
-
 }
 const fetchFKId = async (FK_Obj) => {
     try {
@@ -75,7 +73,6 @@ const fetchdata = async () => {
     try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${tableName}/fields`)
         fields.value = res.data;
-        // console.log(fields.value);
     }
     catch (err) {
         alert("Error while fetching fields");

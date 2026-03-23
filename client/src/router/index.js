@@ -1,9 +1,10 @@
 import AddItem from '@/views/AddItem.vue';
+import AddObj from '@/views/AddObj.vue';
 import Dashbord from '@/views/Dashbord.vue';
-import DetailPage from '@/views/DetailPage.vue';
+import DetailPageView from '@/views/DetailPageView.vue';
 import DynamicObj from '@/views/DynamicObj.vue';
 import Leads from '@/views/Leads.vue';
-import Objects from '@/views/Objects.vue';
+import ObjectManager from '@/views/ObjectManager.vue';
 import UpdateItem from '@/views/UpdateItem.vue';
 import {createRouter, createWebHistory} from 'vue-router';
 
@@ -23,7 +24,7 @@ const router = createRouter({
         {
             path: '/objects',
             name: 'objects' ,
-            component: Objects
+            component: ObjectManager
         },
         {
             path: '/view/:tableName',
@@ -43,7 +44,12 @@ const router = createRouter({
         {
             path: '/detailview/:tableName/:id',
             name:'detailview',
-            component: DetailPage
+            component: DetailPageView
+        },
+        {
+            path: '/createObj',
+            name:'AddObj',
+            component: AddObj
         }
     ]
 });

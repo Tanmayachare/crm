@@ -2,6 +2,16 @@ const express = require('express');
 const db = require('../config/db');
 const router = express.Router();
 
+// router.get('/tabs', (req, res)=>{
+//     const query = "SELECT * FROM tabs ORDER BY tab_order ASC";
+//     db.query(query, (err, results)=>{
+//         if(err){
+//             return res.status(500).json({ error: "Database query failed" });
+//         }
+//         res.json(results);
+//     })
+// })
+
 router.get('/objects', (req, res)=>{
     const query = "SHOW TABLES";
     db.query(query, (err, results)=>{

@@ -6,23 +6,32 @@
             <div class="p-4 border-b border-gray-200 bg-white">
                 <h2 class="text-sm font-semibold text-gray-800 uppercase tracking-wider mb-3">Object Manager</h2>
                 <div class="flex flex-col gap-2">
-                    <input v-model="newObjName" placeholder="New Object Name (e.g. Projects)"
-                        class="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 outline-none w-full" />
-                    <button @click="createObject"
+                    <!-- <input v-model="newObjName" placeholder="New Object Name (e.g. Projects)"
+                        class="px-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 outline-none w-full" /> -->
+                    <!-- <button @click="createObject"
                         class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 rounded transition shadow-sm flex justify-center items-center gap-1 w-full">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
                         </svg>
                         Create Object
-                    </button>
+                    </button> -->
+                    <router-link :to="'/createObj'"
+                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 rounded transition shadow-sm flex justify-center items-center gap-1 w-full"
+                        title="Create Object">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
+                            </path>
+                        </svg>
+                        Create Object
+                    </router-link>
                 </div>
             </div>
             <ul class="flex-1 overflow-y-auto custom-scrollbar bg-white">
-                <li v-for="obj in objects" :key="obj" @click="selectObject(obj)"
+                <li v-for="obj in Object.keys(objects)" :key="obj" @click="selectObject(obj)"
                     class="px-4 py-2.5 cursor-pointer border-b border-gray-100 flex justify-between items-center transition-colors text-sm"
                     :class="selectedObject === obj ? 'bg-blue-50 border-l-4 border-l-blue-600 font-semibold text-blue-800' : 'hover:bg-gray-50 text-gray-600 border-l-4 border-l-transparent'">
-                    <span class="capitalize">{{ obj }}</span>
+                    <span class="">{{ obj }}</span>
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                     </svg>
@@ -36,7 +45,7 @@
 
                 <!-- Object Header -->
                 <div class="px-6 py-4 border-b border-gray-200 bg-white">
-                    <h1 class="text-xl font-bold text-gray-900 capitalize flex items-center gap-2">
+                    <h1 class="text-xl font-bold text-gray-900 flex items-center gap-2">
                         <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
@@ -168,13 +177,13 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, reactive } from 'vue';
 import axios from 'axios';
-import fetchObjectsNav from '../App.vue';
-const objects = ref([])
+const objects = reactive({})
+const selectedObjApi = ref(null)
 const selectedObject = ref(null)
 const fields = ref([])
-const newObjName = ref('')
+// const newObjName = ref('')
 const newField = ref({ name: '', type: 'VARCHAR(255)', options: '', relatedObj: '', validation: '' })
 // const emoji = ref(['🚗', '🛫', '🌏', '🏟', '🏡', '🌅', '🌄', '❄', '⚽', '🎓', '♟', '🏹', '☎'])
 
@@ -184,34 +193,50 @@ const setDefaultName = () => {
     }
 }
 
+// const fetchObjects = async () => {
+//     try {
+//         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`);
+//         objects.value = res.data;
+//     }
+//     catch (err) {
+//         alert("Error while fetching objects");
+//     }
+// };
+
 const fetchObjects = async () => {
     try {
-        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`);
-        objects.value = res.data;
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/tab/data`);
+        res.data.forEach(element => {
+            objects[element.label] = element.api_name;
+        });
+        // console.log(objects)
     }
     catch (err) {
         alert("Error while fetching objects");
+        console.error("Error while fetching objects:", err);
     }
 };
 
-const createObject = async () => {
-    if (!newObjName.value.trim()) return;
-    try {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`, {
-            tableName: newObjName.value.toLowerCase().replace(/\s/g, '_')
-        })
-        newObjName.value = '';
-        fetchObjects();
-        alert("Object created successfully!");
-    }
-    catch (err) {
-        alert("Error while creating object");
-    }
-}
+
+// const createObject = async () => {
+//     if (!newObjName.value.trim()) return;
+//     try {
+//         await axios.post(`${import.meta.env.VITE_API_BASE_URL}/schema/objects`, {
+//             tableName: newObjName.value.toLowerCase().replace(/\s/g, '_')
+//         })
+//         newObjName.value = '';
+//         fetchObjects();
+//         alert("Object created successfully!");
+//     }
+//     catch (err) {
+//         alert("Error while creating object");
+//     }
+// }
 
 const selectObject = async (name) => {
     selectedObject.value = name;
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${name}/fields`);
+    selectedObjApi.value = objects[name];
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObjApi.value}/fields`);
     fields.value = res.data;
 }
 
@@ -238,7 +263,7 @@ const addField = async () => {
         if (!newField.value.relatedObj.trim()) return alert("Please provide Object Name for Lookup Relation");
     }
     try {
-        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObject.value}/fields`, {
+        await axios.post(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObjApi.value}/fields`, {
             fieldName: newField.value.name.toLowerCase().replace(/\s/g, '_'),
             fieldType: finalType,
             refObj: newField.value.relatedObj,
@@ -254,16 +279,18 @@ const addField = async () => {
 }
 
 const delteField = async (colName, keyType) => {
-    try {
-        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObject.value}/${colName}`, {
-            data: { key: keyType }
-        })
-        alert(`${colName} is deleted from ${selectedObject.value}`);
-        selectObject(selectedObject.value);
-    }
-    catch (err) {
-        alert("Error while deleting", err)
-        console.log(err)
+    if (confirm("Are you sure you want to delete this data?")) {
+        try {
+            await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/schema/objects/${selectedObjApi.value}/${colName}`, {
+                data: { key: keyType }
+            })
+            alert(`${colName} is deleted from ${selectedObject.value}`);
+            selectObject(selectedObject.value);
+        }
+        catch (err) {
+            alert("Error while deleting", err)
+            console.log(err)
+        }
     }
 }
 onMounted(() => {

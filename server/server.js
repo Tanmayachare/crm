@@ -12,7 +12,7 @@ app.use(express.json());
 app.use('/api/leads', require('./routes/leads'));
 app.use('/api/schema', require('./routes/schema'));
 app.use('/api/data', require('./routes/data'));
-// app.use('/api/comp', require('./routes/comp'));
+app.use('/api/tab', require('./routes/tabs'));
 
 app.get('/api/dashboard-status1',(req, res)=>{
   const query = 'select count(*) as total_leads, sum(value) as total_value from leads';

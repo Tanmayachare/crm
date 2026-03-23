@@ -4,7 +4,7 @@
         <div
             class="px-4 py-3 flex flex-col md:flex-row gap-3 justify-between items-center bg-gray-50 border-b border-gray-200">
             <div class="flex items-center gap-3 w-full md:w-auto">
-                <h2 class="text-base font-semibold text-gray-800 tracking-tight capitalize">{{ tableName }}</h2>
+                <h2 class="text-base font-semibold text-gray-800 tracking-tight">{{ objectName }}</h2>
                 <div class="h-4 w-px bg-gray-300"></div>
                 <span class="text-xs text-gray-500 font-medium">{{ filteredData.length }} items</span>
             </div>
@@ -94,16 +94,30 @@ const route = useRoute()
 
 const table = ref([]);
 const fields = ref([]);
+const objectName = ref('');
 let tableName = route.params.tableName;
 const localSearchText = ref('');
 let col = ref([]);
 let fieldName = ref([])
 
+const getObjectName = async () => {
+    try {
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/tab/objName/${tableName}`)
+        objectName.value = res.data[0]?.label;
+        // console.log(res.data)
+        // console.log(objectName.value)
+    }
+    catch (err) {
+        alert("Error while fetching table data");
+        console.error("Error while fetching table data:", err);
+    }
+}
+
 const fetchTables = async () => {
     try {
         const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/data/${tableName}`)
         table.value = res.data;
-        // console.log(table.value)
+        // console.log(table.value) 
     }
     catch (err) {
         alert("Error while fetching table data");
@@ -155,11 +169,13 @@ const filteredData = computed(() => {
 
 const loadPage = async () => {
     tableName = route.params.tableName
+    await getObjectName()
     await fetchdata()
     await fetchTables()
 }
 
 onMounted(async () => {
+    await getObjectName()
     await fetchdata()
     await fetchTables()
 });
